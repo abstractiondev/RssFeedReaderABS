@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- edited with XMLSpy v2011 (http://www.altova.com) by Kalle Launiala (Citrus Solutions Oy) -->
+<RssFeedAbstraction xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="RssFeedReader_v1_0.xsd">
+  <FeedReaders generatorNamespace="EsimerkkiNamespace">
+    <FeedReader name="IltalehtiFeedReader" sourceUrl="IltelehtiUrl" pollFrequencySeconds="10" >
+      <Event fireType="ContentChanged" name="Oletusmuuttuneet"/>
+    </FeedReader>
+  </FeedReaders>
+</RssFeedAbstraction>

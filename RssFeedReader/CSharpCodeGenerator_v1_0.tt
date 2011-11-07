@@ -1,0 +1,169 @@
+﻿<#@ template debug="true" hostSpecific="true" #>
+<#@ output extension=".designer.cs" #>
+<#@ Assembly Name="System.Core.dll" #>
+<#@ Assembly Name="System.Xml.dll" #>
+<#@ Assembly Name="System.Xml.Linq.dll" #>
+<#@ Assembly Name="System.Windows.Forms.dll" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Xml" #>
+<#@ import namespace="System.Xml.Serialization" #>
+<#@ import namespace="System.Diagnostics" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Xml.Linq" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #> 
+<#@ include file="..\Common\CommonCodeblocks.ttinclude" #>
+<#@ include file="RssFeedReader_v1_0.ttinclude" #>
+<#   
+	string templateDirectoryName = Path.GetDirectoryName(Host.TemplateFile);
+	string directoryName = templateDirectoryName + @"\Content_v1_0";
+	string[] xmlFileNames = Directory.GetFiles(directoryName, "*.xml");
+	
+	foreach(string xmlFileName in xmlFileNames)
+	{
+		RssFeedReader_v1_0.RssFeedAbstractionType abstraction = LoadXml<RssFeedReader_v1_0.RssFeedAbstractionType>(xmlFileName);
+		GenerateRssReader(abstraction);
+		//RssFeedReader_v1_0.
+		//PowerPointAddIn_v1_0.PowerPointAddInAbstraction abstraction = LoadXml<PowerPointAddIn_v1_0.PowerPointAddInAbstraction>(xmlFileName);
+		//GenerateAddInBase(abstraction);
+	}
+#>
+<#+ 
+	void GenerateNewEvents(RssFeedReader_v1_0.EventType eventItem)
+	{
+		if(eventItem.fireType != RssFeedReader_v1_0.EventTypeFireType.NewItemsAdded)
+			return;
+		#>
+		EventImplementation.ExecuteNewEvent_<#= eventItem.name #>(content);
+		<#+
+	}
+	
+	void GenerateModifiedEvents(RssFeedReader_v1_0.EventType eventItem)
+	{
+		if(eventItem.fireType != RssFeedReader_v1_0.EventTypeFireType.ContentChanged)
+			return;
+		#>
+		EventImplementation.ExecuteModifiedEvent_<#= eventItem.name #>(content);
+		<#+
+	}
+	
+ 	void GenerateFeedReader(RssFeedReader_v1_0.FeedReaderType reader)
+	{
+		string className = reader.name + "FeedReader";
+		RssFeedReader_v1_0.EventType[] currEvents = reader.Event ?? new RssFeedReader_v1_0.EventType[0];
+		#>
+		
+		
+    public class <#= className #>
+    {
+        public readonly string SourceUrl;
+        public readonly int PollFrequencySeconds;
+        private RssContent[] PreviousContent;
+
+        public <#= className #>(string sourceUrl, int pollFrequencySeconds)
+        {
+            SourceUrl = sourceUrl;
+            PollFrequencySeconds = pollFrequencySeconds;
+            initializeEventPoller();
+        }
+
+        private void initializeEventPoller()
+        {
+            // TODO: Poll events with timer
+
+            RssContent[] currentContent= GetCurrentContent();
+            foreach (var content in currentContent)
+            {
+                if(IsNew(content))
+                {
+                    CallEventsForNew(content);
+                }
+                if(IsModified(content))
+                {
+                    CallEventsForModified(content);
+                }
+
+            }
+            PreviousContent = currentContent;
+        }
+
+        private void CallEventsForModified(RssContent content)
+        {
+			<#+ 
+			foreach(var eventItem in currEvents)
+				GenerateNewEvents(eventItem); 
+			#>
+            // TODO:Modified events
+        }
+
+        private bool IsModified(RssContent content)
+        {
+            if (PreviousContent == null)
+                return false;
+            return PreviousContent.Count(item => item.Title == content.Title && item.Content != content.Content) > 0;
+        }
+
+        private void CallEventsForNew(RssContent content)
+        {
+			<#+ 
+			foreach(var eventItem in currEvents)
+				GenerateModifiedEvents(eventItem); 
+			#>
+            // TODO: New Events
+        }
+
+        private bool IsNew(RssContent content)
+        {
+            if (PreviousContent == null)
+                return false;
+            return PreviousContent.Count(item => item.Title == content.Title) == 0;
+        }
+
+        private RssContent[] GetCurrentContent()
+        {
+            // TODO: Fetch RSS Content
+            return new RssContent[] { new RssContent { Title = "Testititle", Content = "TestiContent"}};
+        }
+    }
+
+		
+		<#+
+	}
+	
+	void GenerateFeedReaders(RssFeedReader_v1_0.FeedReadersType feedReaders)
+	{
+		#>
+namespace <#= feedReaders.generatorNamespace #>
+{
+		//foreach(var reader in feedReaders
+//		GenerateFeedReader
+	<#+
+	foreach(var feedReader in feedReaders.FeedReader)
+		GenerateFeedReader(feedReader);
+		#>
+    public class RssContent
+    {
+        public string Title;
+        public string Content;
+    }
+}
+		
+		
+		<#+
+		
+	}
+	
+	void GenerateRssReader(RssFeedReader_v1_0.RssFeedAbstractionType abstraction)
+	{
+		#>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Xml;
+		<#+
+		foreach(var readers in abstraction.FeedReaders)
+			GenerateFeedReaders(readers);	
+	}
+#>
