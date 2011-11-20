@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2011 rel. 2 sp1 (http://www.altova.com) by Kalle Launiala (Citrus Solutions Oy) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="RssFeedAbstraction" type="RssFeedAbstractionType"/>
+	<xs:complexType name="EventType">
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="fireType" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="ContentChanged"/>
+					<xs:enumeration value="NewItemsAdded"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="FeedReaderType">
+		<xs:sequence>
+			<xs:element name="Event" type="EventType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="sourceUrl" type="xs:anyURI" use="required"/>
+		<xs:attribute name="pollFrequencySeconds" type="xs:int" use="required">
+			<xs:annotation>
+				<xs:documentation>Poll frequency that the reader will check the feed.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="FeedReadersType">
+		<xs:sequence>
+			<xs:element name="FeedReader" type="FeedReaderType" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="generatorNamespace" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="RssFeedAbstractionType">
+		<xs:sequence>
+			<xs:element name="FeedReaders" type="FeedReadersType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

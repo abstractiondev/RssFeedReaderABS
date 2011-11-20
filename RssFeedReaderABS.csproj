@@ -41,6 +41,45 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="RssFeedReader\CSharpCodeGenerator_v1_0.designer.cs">
+      <DependentUpon>CSharpCodeGenerator_v1_0.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </None>
+    <None Include="RssFeedReader\RssFeedReader_v1_0.ttinclude" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Common\CommonCodeblocks.ttinclude" />
+    <None Include="Common\XSDToIncludeGenerator.ttinclude" />
+    <None Include="RssFeedReader\CSharpCodeGenerator_v1_0.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>CSharpCodeGenerator_v1_0.designer.cs</LastGenOutput>
+    </None>
+    <None Include="RssFeedReader\Content_v1_0\RssFeedReader_v1_0.log">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RssFeedReader_v1_0.tt</DependentUpon>
+    </None>
+    <None Include="RssFeedReader\Content_v1_0\RssFeedReader_v1_0.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>RssFeedReader_v1_0.xsd</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <LastGenOutput>RssFeedReader_v1_0.log</LastGenOutput>
+    </None>
+    <None Include="RssFeedReader\Content_v1_0\RssFeedReader_v1_0.xsd">
+      <Generator>T4ScriptFileGenerator</Generator>
+      <LastGenOutput>RssFeedReader_v1_0.tt</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="RssFeedReader\Content_v1_0\RssFeedReaderContent.xml">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
