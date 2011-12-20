@@ -75,16 +75,8 @@ using System.Xml;
         }
     }
 
-    internal static class EventImplementation
-    {
-        public static void ExecuteModifiedEvent_Oletusmuuttuneet(RssContent content)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-
-    public class RssContent
+		
+		    public class RssContent
     {
         public string Title;
         public string Content;
